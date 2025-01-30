@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const TranscriptUploader = () => {
-  const [transcript, setTranscript] = useState<string>('');
+interface TranscriptUploaderProps {
+  transcript: string;
+  setTranscript: (transcript: string) => void;
+}
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-  };
-
+const TranscriptUploader: React.FC<TranscriptUploaderProps> = ({ transcript, setTranscript }) => {
   return (
-    <form  className="transcript-form">
+    <div className="transcript-form">
       <textarea
-        className='transcript-textarea'
+        value={transcript}
+        onChange={(e) => setTranscript(e.target.value)}
         placeholder="Enter your transcript here"
+        className="transcript-textarea"
       />
-      <button type="submit" className="generate-button" onClick={handleSubmit}>Generate Podcast</button>
-    </form>
+    </div>
   );
 };
 

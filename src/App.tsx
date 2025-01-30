@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import TranscriptUploader from './TranscriptUpload/TranscriptUploader';
 import AudioUploader from './AudioUpload/AudioUploader';
-import Player from './PodPlayer/Player';
+import TranscriptUploader from './TranscriptUpload/TranscriptUploader';
+import PodcastGenerator from './PodPlayer/PodcastGenerator';
 import './App.css';
 
 const App: React.FC = () => {
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [audioUrl, setAudioUrl] = useState<File | null>(null);
 
-  const handleGenerateAudio = (url: string) => {
-    setAudioUrl(url);
+  const toggleTranscript = () => {
+    setShowTranscript(!showTranscript);
   };
 
   return (
@@ -16,11 +18,21 @@ const App: React.FC = () => {
       <div className="content-container">
         <h1>Podcast Generator</h1>
         <div className="upload-buttons">
-          <AudioUploader  />
-          <button className="upload-button">Enter Transcript</button>
+          <AudioUploader onAudioUploaded={setAudioUrl} />
+          <button className="upload-button" onClick={toggleTranscript}>
+            Enter Transcript
+          </button>
         </div>
-        <TranscriptUploader  />
-        {audioUrl && <Player  />}
+        {showTranscript && (
+          <TranscriptUploader
+            transcript={transcript}
+            setTranscript={setTranscript}
+          />
+        )}
+        <PodcastGenerator
+          transcript={transcript}
+          audioUrl={audioUrl}
+        />
       </div>
     </div>
   );
