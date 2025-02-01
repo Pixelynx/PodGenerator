@@ -25,7 +25,6 @@ const App: React.FC = () => {
         </div>
         {showTranscript && (
           <TranscriptUploader
-            transcript={transcript}
             setTranscript={setTranscript}
           />
         )}

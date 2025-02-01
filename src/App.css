@@ -32,7 +32,7 @@ h1 {
   margin-bottom: 1rem;
 }
 
-.upload-button {
+.upload-button, .audio-uploader {
   background-color: #ba03fc;
   color: white;
   border: none;
