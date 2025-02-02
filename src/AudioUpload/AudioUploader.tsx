@@ -1,19 +1,28 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { handleAudioUpload } from '../api/utils/uploadAudioFile';
 
 interface AudioUploaderProps {
   onAudioUploaded: (file: File) => void;
 }
 
-const AudioUploader: React.FC<AudioUploaderProps> = ({ onAudioUploaded }) => {
+const AudioUploader: React.FC = () => {
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      onAudioUploaded(file);
+      try {
+
+        // TODO: Handle saving file to server
+
+        // setAudioUrl();
+      } catch (error) {
+        console.error("Error uploading audio:", error);
+      }
     }
   };
-
+  
   const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
@@ -24,12 +33,11 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onAudioUploaded }) => {
         Upload Audio
       </button>
       <input
-        ref={fileInputRef}
         type="file"
         accept="audio/*"
         onChange={handleFileUpload}
         style={{ display: 'none' }}
-      />
+        />
     </div>
   );
 };

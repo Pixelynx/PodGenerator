@@ -18,7 +18,7 @@ const App: React.FC = () => {
       <div className="content-container">
         <h1>Podcast Generator</h1>
         <div className="upload-buttons">
-          <AudioUploader onAudioUploaded={setAudioUrl} />
+          <AudioUploader />
           <button className="upload-button" onClick={toggleTranscript}>
             Enter Transcript
           </button>
