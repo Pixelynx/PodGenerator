@@ -1,11 +1,14 @@
+/// <reference path="../custom.d.ts" />
 import React, { useEffect, useRef, useState } from 'react';
+import 'media-chrome';
 
 interface PodcastGeneratorProps {
   transcript: string;
-  audioUrl: File | null;
+  audioUrl: string | null;
+  showTranscript: boolean;
 }
 
-const PodcastGenerator: React.FC<PodcastGeneratorProps> = ({ transcript, audioUrl }) => {
+const PodcastGenerator: React.FC<PodcastGeneratorProps> = ({ transcript, showTranscript, audioUrl }) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -24,9 +27,9 @@ const PodcastGenerator: React.FC<PodcastGeneratorProps> = ({ transcript, audioUr
       return;
     }
 
-    if (audioUrl) {
+    if (!showTranscript && audioUrl) {
       console.log('Generate podcast from audio file.');
-    } else if (transcript) {
+    } else if (showTranscript && transcript) {
       console.log('Generate podcast from transcript');
       const synth = window.speechSynthesis;
       const utterance = new SpeechSynthesisUtterance(transcript);
@@ -82,7 +85,19 @@ const PodcastGenerator: React.FC<PodcastGeneratorProps> = ({ transcript, audioUr
     <div className="podcast-generator">
       <button className="generate-button" onClick={handleGeneratePodcast}>Generate Podcast</button>
       <canvas ref={canvasRef} style={{ display: 'none' }} width="640" height="480" />
-      {videoUrl && <video ref={videoRef} src={videoUrl} controls />}
+      {videoUrl  && (
+      //@ts-ignore
+        <media-controller>
+          <video slot="media" src={audioUrl}></video>
+          <media-control-bar>
+            <media-play-button></media-play-button>
+            <media-mute-button></media-mute-button>
+            <media-volume-range></media-volume-range>
+            <media-time-range></media-time-range>
+            <media-playback-rate-button></media-playback-rate-button>
+          </media-control-bar>
+        </media-controller>
+      )}
     </div>
   );
 };

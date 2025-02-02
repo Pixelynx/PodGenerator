@@ -7,9 +7,9 @@ import './App.css';
 const App: React.FC = () => {
   const [showTranscript, setShowTranscript] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const [audioUrl, setAudioUrl] = useState<File | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
-  const toggleTranscript = () => {
+  const toggleView = () => {
     setShowTranscript(!showTranscript);
   };
 
@@ -18,21 +18,23 @@ const App: React.FC = () => {
       <div className="content-container">
         <h1>Podcast Generator</h1>
         <div className="upload-buttons">
-          <AudioUploader />
-          <button className="upload-button" onClick={toggleTranscript}>
+          <AudioUploader onAudioUploaded={setAudioUrl}/>
+          <button className="upload-button" onClick={toggleView}>
             Enter Transcript
           </button>
         </div>
         {showTranscript && (
-          <TranscriptUploader
-            setTranscript={setTranscript}
-          />
-        )}
-        <PodcastGenerator
+        <TranscriptUploader
           transcript={transcript}
-          audioUrl={audioUrl}
+          setTranscript={setTranscript}
         />
-      </div>
+      )}
+      <PodcastGenerator
+        transcript={transcript}
+        audioUrl={audioUrl}
+        showTranscript={showTranscript}
+      />
+    </div>
     </div>
   );
 };

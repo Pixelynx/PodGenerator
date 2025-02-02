@@ -2,10 +2,10 @@ import React, { useRef, useState } from 'react';
 import { handleAudioUpload } from '../api/utils/uploadAudioFile';
 
 interface AudioUploaderProps {
-  onAudioUploaded: (file: File) => void;
+  onAudioUploaded: (url: string) => void;
 }
 
-const AudioUploader: React.FC = () => {
+const AudioUploader: React.FC<AudioUploaderProps> = ({ onAudioUploaded }) => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
