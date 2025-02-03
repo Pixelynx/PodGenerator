@@ -1,45 +1,32 @@
-import React, { useRef, useState } from 'react';
-import { handleAudioUpload } from '../api/utils/uploadAudioFile';
+import React, { useState } from 'react';
+import { Button, Box, Typography } from '@mui/material';
 
 interface AudioUploaderProps {
-  onAudioUploaded: (url: string) => void;
+  setInputType: (inputType: 'audio' | 'transcript' | null) => void;
+  setAudioUrl: (url: string) => void;
 }
 
-const AudioUploader: React.FC<AudioUploaderProps> = ({ onAudioUploaded }) => {
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+const AudioUploader: React.FC<AudioUploaderProps> = ({ setAudioUrl, setInputType }) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-
-        // TODO: Handle saving file to server
-
-        // setAudioUrl();
-      } catch (error) {
-        console.error("Error uploading audio:", error);
-      }
+      const url = URL.createObjectURL(file);
+      setAudioUrl(url);
+      setInputType('audio');
     }
-  };
-  
-  const handleButtonClick = () => {
-    fileInputRef.current?.click();
   };
 
   return (
-    <div className="audio-uploader">
-      <button onClick={handleButtonClick} className="upload-button">
-        Upload Audio
-      </button>
+    <Button variant="contained" component="label">
+      Upload Audio
       <input
         type="file"
-        accept="audio/*"
+        hidden accept="audio/*"
         onChange={handleFileUpload}
-        style={{ display: 'none' }}
         />
-    </div>
+    </Button>
   );
 };
+
 
 export default AudioUploader;
