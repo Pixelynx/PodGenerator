@@ -1,10 +1,13 @@
 from django.shortcuts import render
 
 import requests
+import google.generativeai as genai
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # Makes call to Gemini
 class GeneratePodcastView(APIView):
@@ -24,14 +27,14 @@ class GeneratePodcastView(APIView):
             if input_type == 'audio':
                 # Call Gemini API with audio URL to generate video
                 response = requests.post(
-                    'https://<AUDIO-TO-VIDEO>',
+                    'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + {settings.GEMINI_API_KEY},
                     json={'audio_url': input_data},
                     headers=headers,
                 )
             elif input_type == 'transcript':
                 # Call Gemini API with transcript text to generate video
                 response = requests.post(
-                    'https://<TRANSCRIPT-TO-VIDEO',
+                    'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + {settings.GEMINI_API_KEY},
                     json={'transcript': input_data},
                     headers=headers,
                 )
@@ -49,3 +52,23 @@ class GeneratePodcastView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@csrf_exempt
+def upload_audio(request):
+    if request.method == 'POST' and request.FILES.get('audio'):
+        audio_file = request.FILES['audio']
+        try:
+            # Upload file to Gemini
+            uploaded_file = genai.upload_file(audio_file)
+            
+            # Use uploaded file in Gemini API call
+            model = genai.GenerativeModel("gemini-1.5-pro")
+            response = model.generate_content([uploaded_file, "Generate a video for this audio"])
+            
+            # Take response and return result
+            return JsonResponse({
+                'success': True,
+                'generated_content': response.text
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    return JsonResponse({'success': False, 'error': 'No file provided'}, status=400)

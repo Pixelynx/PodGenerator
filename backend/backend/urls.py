@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api.views import GeneratePodcastView
+from api.views import GeneratePodcastView, upload_audio
 
 urlpatterns = [
+    path('upload/', upload_audio, name='upload_audio'),
     path('generate/', GeneratePodcastView.as_view(), name='generate-podcast'),
     path('admin/', admin.site.urls),
 ]
